@@ -115,7 +115,7 @@ int heap_scan(struct dn_heap *, int (*)(void *, uintptr_t), uintptr_t);
  * dn_ht_init() initializes the table, setting the number of
  *	buckets, the offset of the link field, the main callbacks.
  *	Callbacks are:
- * 
+ *
  *	hash(key, flags, arg) called to return a bucket index.
  *	match(obj, key, flags, arg) called to determine if key
  *		matches the current 'obj' in the heap
@@ -164,7 +164,7 @@ int heap_scan(struct dn_heap *, int (*)(void *, uintptr_t), uintptr_t);
  */
 struct dn_ht;	/* should be opaque */
 
-struct dn_ht *dn_ht_init(struct dn_ht *, int buckets, int ofs, 
+struct dn_ht *dn_ht_init(struct dn_ht *, int buckets, int ofs,
         uint32_t (*hash)(uintptr_t, int, void *),
         int (*match)(void *, uintptr_t, int, void *),
         void *(*newh)(uintptr_t, int, void *));
@@ -186,6 +186,7 @@ enum {  /* flags values.
         DNHT_INSERT	= 0x0010,	/* insert if not found */
         DNHT_UNIQUE	= 0x0020,	/* report error if already there */
         DNHT_REMOVE	= 0x0040,	/* remove on find or dn_ht_free */
-}; 
+        DNHT_COPY_ERR 	= 0x0080,   	/* error during a copy */
+};
 
 #endif /* _IP_DN_HEAP_H */
