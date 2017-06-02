@@ -31,13 +31,12 @@
 atf_test_case align
 align_head() {
 	atf_set "descr" "Test that cat(1) aligns the output " \
-			"right with options '-be' (PR bin/4841)"
+			"right with option '-b' (PR bin/4841)"
 }
 
 align_body() {
-
 	atf_check -s ignore -o file:$(atf_get_srcdir)/d_align.out \
-		-x "cat -be $(atf_get_srcdir)/d_align.in"
+		cat -b $(atf_get_srcdir)/d_align.in
 }
 
 atf_test_case nonexistent
@@ -47,25 +46,53 @@ nonexistent_head() {
 }
 
 nonexistent_body() {
-
 	atf_check -s not-exit:0 -o empty -e not-empty \
-		-x "cat /some/name/that/does/not/exist"
+		cat /some/name/that/does/not/exist
 }
 
-atf_test_case se_output
-se_output_head() {
+atf_test_case e_output
+e_output_head() {
 	atf_set "descr" "Test that cat(1) prints a $ sign " \
-			"on blank lines with options '-se' (PR bin/51250)"
+			"on blank lines with option '-e' (PR bin/51250)"
 }
 
-se_output_body() {
-	atf_check -s ignore -o file:$(atf_get_srcdir)/d_se_output.out \
-		-x "cat -se $(atf_get_srcdir)/d_se_output.in"
+e_output_body() {
+	atf_check -s ignore -o file:$(atf_get_srcdir)/d_e_output.out \
+		cat -e $(atf_get_srcdir)/d_e_output.in
 }
+
+# Begin FreeBSD
+
+atf_test_case s_output
+s_output_head() {
+	atf_set "descr" "Test that cat(1) squeezes multiple adjacent " \
+			"empty lines producing a single spaced output with option '-s'"
+}
+
+s_output_body() {
+	atf_check -s ignore -o file:$(atf_get_srcdir)/d_s_output.out \
+		cat -s $(atf_get_srcdir)/d_s_output.in
+}
+
+atf_test_case vt_output
+vt_output_head() {
+	atf_set "descr" "Test that cat(1) displays non-printing characters, " \
+			"namely control characters, tab character and meta-characters " \
+			"using options '-vt'"
+}
+
+vt_output_body() {
+	atf_check -s ignore -o file:$(atf_get_srcdir)/d_vt_output.out \
+		cat -vt $(atf_get_srcdir)/d_vt_output.in
+}
+
+# End FreeBSD
 
 atf_init_test_cases()
 {
 	atf_add_test_case align
 	atf_add_test_case nonexistent
-	atf_add_test_case se_output
+	atf_add_test_case e_output
+	atf_add_test_case s_output
+	atf_add_test_case vt_output
 }
