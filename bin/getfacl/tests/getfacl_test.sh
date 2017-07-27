@@ -26,15 +26,15 @@
 # $FreeBSD$
 #
 
-check_acl()
+check_acl_posix1e()
 {
 	# Check if POSIX.1e ACLs are enabled on the root partition.
 	fs=`df . | awk '$NF ~ "/" {print $1}'`
 	if mount | awk -v fs=$fs '$1 == fs' | grep -q acls &&
 	   tunefs -p "$fs" 2>&1 | awk '$2 == "POSIX.1e" {print $5}' | grep -q enabled; then
-	    # ok
+		# ok
 	else
-	   atf_skip "POSIX.1e ACLs are not enabled"
+		atf_skip "POSIX.1e ACLs are not enabled"
 	fi
 }
 
@@ -63,15 +63,15 @@ get_other_perm()
 	stat -f "%SLp" "$1"
 }
 
-atf_test_case no_opt
-no_opt_head()
+atf_test_case no_opt_posix1e
+no_opt_posix1e_head()
 {
 	atf_set "descr" "Verify the output of the getfacl(1) command " \
 			"without any options."
 	atf_set "require.user" "root"
 }
 
-no_opt_body()
+no_opt_posix1e_body()
 {
 	check_acl
 	atf_check touch A
@@ -84,8 +84,8 @@ no_opt_body()
 	atf_check -o inline:'# file: A\n# owner: '"$user_A"'\n# group: '"$group_A"'\nuser::'"$user_perm_A"'\ngroup::'"$group_perm_A"'\nmask::'"$group_perm_A"'\nother::'"$other_perm_A"'\n' getfacl A
 }
 
-atf_test_case no_opt_symbolic
-no_opt_symbolic_head()
+atf_test_case no_opt_posix1e_symbolic
+no_opt_posix1e_symbolic_head()
 {
 	atf_set "descr" "Verify that if the target of the operation is a symbolic " \
 			"link, then getfacl(1) returns the ACL from the source of " \
@@ -93,7 +93,7 @@ no_opt_symbolic_head()
 	atf_set "require.user" "root"
 }
 
-no_opt_symbolic_body()
+no_opt_posix1e_symbolic_body()
 {
 	check_acl
 	atf_check touch A
@@ -107,8 +107,8 @@ no_opt_symbolic_body()
 	atf_check -o inline:'# file: B\n# owner: '"$user_A"'\n# group: '"$group_A"'\nuser::'"$user_perm_A"'\ngroup::'"$group_perm_A"'\nmask::'"$group_perm_A"'\nother::'"$other_perm_A"'\n' getfacl B
 }
 
-atf_test_case h_flag
-h_flag_head()
+atf_test_case h_flag_posix1e
+h_flag_posix1e_head()
 {
 	atf_set "descr" "Verify that if the target of the operation is a symbolic " \
 			"link, then '-h' option returns the ACL from the symbolic " \
@@ -116,7 +116,7 @@ h_flag_head()
 	atf_set "require.user" "root"
 }
 
-h_flag_body()
+h_flag_posix1e_body()
 {
 	check_acl
 	atf_check touch A
@@ -128,15 +128,15 @@ h_flag_body()
 	atf_check -o inline:'user::'"$user_perm_B"'\ngroup::'"$group_perm_B"'\nother::'"$other_perm_B"'\n' getfacl -hq B
 }
 
-atf_test_case q_flag
-q_flag_head()
+atf_test_case q_flag_posix1e
+q_flag_posix1e_head()
 {
 	atf_set "descr" "Verify that '-q' option does not display commented " \
 			"information about file name and ownership."
 	atf_set "require.user" "root"
 }
 
-q_flag_body()
+q_flag_posix1e_body()
 {
 	check_acl
 	atf_check touch A
@@ -149,8 +149,8 @@ q_flag_body()
 
 atf_init_test_cases()
 {
-	atf_add_test_case no_opt
-	atf_add_test_case no_opt_symbolic
-	atf_add_test_case h_flag
-	atf_add_test_case q_flag
+	atf_add_test_case no_opt_posix1e
+	atf_add_test_case no_opt_posix1e_symbolic
+	atf_add_test_case h_flag_posix1e
+	atf_add_test_case q_flag_posix1e
 }
